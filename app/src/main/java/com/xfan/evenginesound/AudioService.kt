@@ -7,10 +7,10 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.media.session.MediaSession
 import android.os.Binder
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
-import androidx.media.session.MediaSessionCompat
 
 /**
  * 前台服务 + MediaSession：承载 Oboe 声浪引擎，保证锁屏/后台/车机下持续播放，
@@ -18,7 +18,7 @@ import androidx.media.session.MediaSessionCompat
  */
 class AudioService : Service() {
     private val binder = AudioBinder()
-    private var mediaSession: MediaSessionCompat? = null
+    private var mediaSession: MediaSession? = null
     private var running = false
 
     inner class AudioBinder : Binder() {
@@ -30,7 +30,7 @@ class AudioService : Service() {
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
-        mediaSession = MediaSessionCompat(this, "EVEngine").apply { isActive = true }
+        mediaSession = MediaSession(this, "EVEngine").apply { isActive = true }
     }
 
     fun startEngine(blend: Float, volume: Float) {
