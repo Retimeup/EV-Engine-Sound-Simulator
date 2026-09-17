@@ -180,11 +180,13 @@ class BleObdManager(
         }
     }
 
-    private val pollRunnable: Runnable = Runnable {
-        if (gatt == null || writeChar == null) return@Runnable
-        sendCommand(commands[cmdIndex % commands.size])
-        cmdIndex++
-        handler.postDelayed(pollRunnable, 220)
+    private val pollRunnable: Runnable = object : Runnable {
+        override fun run() {
+            if (gatt == null || writeChar == null) return
+            sendCommand(commands[cmdIndex % commands.size])
+            cmdIndex++
+            handler.postDelayed(this, 220)  // 用 this 自引用，避免 val 初始化时引用自身
+        }
     }
 
     private fun sendCommand(cmd: String) {
