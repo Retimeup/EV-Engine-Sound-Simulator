@@ -105,6 +105,16 @@ class MainActivity : AppCompatActivity() {
         binding.seekShiftRpm.setOnSeekBarChangeListener(simple {
             gearbox.shiftUpRpm = it.toFloat()
         })
+
+        // 数据源开关：与布局默认值同步，用户可随时关掉异常的数据源（自动回退，不影响声浪）
+        gearbox.usePedalForLoad = binding.switchPedal.isChecked
+        gearbox.useRealRpm = binding.switchRealRpm.isChecked
+        binding.switchPedal.setOnCheckedChangeListener { _, checked ->
+            gearbox.usePedalForLoad = checked
+        }
+        binding.switchRealRpm.setOnCheckedChangeListener { _, checked ->
+            gearbox.useRealRpm = checked
+        }
     }
 
     override fun onStart() {
@@ -123,6 +133,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setStatus(s: String) { binding.tvStatus.text = s }
+
+    /** 实时显示本车暴露了哪些 PID、当前实际使用的负载源/转速源（取不到时能看到回退到哪一档）。 */
+    private fun updateDataStatus(frame: ObdFrame, state: EngineState) {
+        fun flag(pid: String) = if (frame.available[pid] == true) "有" else "无"
+        val loadSrc = when (state.loadSource) {
+            "pedal" -> "踏板"
+            "throttle" -> "油门"
+            else -> "速度估算"
+        }
+        val rpmSrc = if (state.rpmSource == "real") "真实转速" else "虚拟转速"
+        binding.tvDataStatus.text = buildString {
+            append("数据 速度:${flag("0D")} 油门:${flag("11")} 踏板:${flag("5A")} 转速:${flag("0C")}")
+            append(" | 负载源:$loadSrc 转速源:$rpmSrc")
+            append(" | ${state.gear}挡 ${state.virtualRpm.toInt()}rpm")
+        }
+    }
 
     private fun hasPerms(): Boolean {
         return if (Build.VERSION.SDK_INT >= 31) {

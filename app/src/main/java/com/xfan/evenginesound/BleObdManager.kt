@@ -180,7 +180,7 @@ class BleObdManager(
         }
     }
 
-    private val pollRunnable = Runnable {
+    private val pollRunnable: Runnable = Runnable {
         if (gatt == null || writeChar == null) return@Runnable
         sendCommand(commands[cmdIndex % commands.size])
         cmdIndex++
