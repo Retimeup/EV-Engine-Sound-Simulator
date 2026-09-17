@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">EV 声浪模拟器</string>
+    <string name="status_idle">未连接</string>
+    <string name="status_scanning">正在扫描 ELM327…</string>
+    <string name="status_connecting">连接中…</string>
+    <string name="status_connected">已连接：%1$s</string>
+    <string name="status_engine_on">声浪引擎运行中</string>
+    <string name="btn_scan">扫描设备</string>
+    <string name="btn_connect">连接</string>
+    <string name="btn_start">启动声浪</string>
+    <string name="btn_stop">停止声浪</string>
+    <string name="label_blend">电机/燃油 混合比 (右=电机)</string>
+    <string name="label_volume">音量</string>
+    <string name="label_gears">虚拟挡位数</string>
+    <string name="label_shift_rpm">升挡 RPM 阈值</string>
+    <string name="data_status_waiting">数据可用：等待连接…</string>
+    <string name="label_pedal">优先用加速踏板作负载(关则回退油门/速度)</string>
+    <string name="label_realrpm">用真实电机转速(若本车暴露，否则自动虚拟)</string>
+    <string name="perm_required">需要蓝牙权限才能扫描 OBD 设备</string>
+</resources>
