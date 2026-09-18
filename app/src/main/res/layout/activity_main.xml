@@ -18,6 +18,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
+        <!-- 实时数值面板：读不到的数据显示 NA，一眼区分"没收到"与"车不提供" -->
+        <TextView
+            android:id="@+id/tvLive"
+            android:text="@string/live_waiting"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="#4FC3F7"
+            android:lineSpacingExtra="4dp"
+            android:layout_marginBottom="4dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <Button
             android:id="@+id/btnScan"
             android:text="@string/btn_scan"
@@ -150,6 +162,50 @@
                 android:id="@+id/switchRealRpm"
                 android:checked="true"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <!-- 调试：原始串口日志开关 -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:text="@string/label_show_debug"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+            <Switch
+                android:id="@+id/switchDebug"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/logBox"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:layout_marginTop="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/btnClearLog"
+                android:text="@string/btn_clear_log"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/tvLog"
+                android:fontFamily="monospace"
+                android:textSize="11sp"
+                android:textIsSelectable="true"
+                android:background="#22000000"
+                android:padding="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>
 

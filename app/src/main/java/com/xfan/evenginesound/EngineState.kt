@@ -10,6 +10,7 @@ data class EngineState(
     val virtualRpm: Float = 0f,
     val gear: Int = 1,
     val shifting: Boolean = false,
+    val load: Float = 0.6f,            // 归一化负载 0..1，驱动音色（负载越高越"用力"、沙哑）
     val loadSource: String = "none",   // "pedal" | "throttle" | "speed"
     val rpmSource: String = "virtual"  // "real" | "virtual"
 )

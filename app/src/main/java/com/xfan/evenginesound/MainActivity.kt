@@ -56,6 +56,7 @@ class MainActivity : AppCompatActivity() {
         override fun onConnected() { setStatus("已连接") }
         override fun onDisconnected() { setStatus("已断开") }
         override fun onError(msg: String) { setStatus(msg) }
+        override fun onLog(line: String) { appendLog(line) }
 
         override fun onData(frame: ObdFrame) {
             val state = gearbox.update(frame)
@@ -115,6 +116,16 @@ class MainActivity : AppCompatActivity() {
         binding.switchRealRpm.setOnCheckedChangeListener { _, checked ->
             gearbox.useRealRpm = checked
         }
+
+        // 调试日志面板开关
+        binding.logBox.visibility = android.view.View.GONE
+        binding.switchDebug.setOnCheckedChangeListener { _, checked ->
+            binding.logBox.visibility = if (checked) android.view.View.VISIBLE else android.view.View.GONE
+        }
+        binding.btnClearLog.setOnClickListener {
+            logLines.clear()
+            binding.tvLog.text = ""
+        }
     }
 
     override fun onStart() {
@@ -134,20 +145,35 @@ class MainActivity : AppCompatActivity() {
 
     private fun setStatus(s: String) { binding.tvStatus.text = s }
 
-    /** 实时显示本车暴露了哪些 PID、当前实际使用的负载源/转速源（取不到时能看到回退到哪一档）。 */
+    // ---------------- 调试日志 ----------------
+    private val logLines = mutableListOf<String>()
+
+    private fun appendLog(line: String) {
+        logLines.add(line)
+        while (logLines.size > 60) logLines.removeAt(0)   // 只留最近 60 行，避免无限增长
+        binding.tvLog.text = logLines.joinToString("\n")
+    }
+
+    /**
+     * 实时数值面板：每个字段读不到就显示 NA —— 一眼区分"蓝牙没收到"与"车不提供该 PID"。
+     * 下方一行显示各 PID 是否曾成功解析，以及当前实际使用的负载源/转速源（回退到哪一档）。
+     */
     private fun updateDataStatus(frame: ObdFrame, state: EngineState) {
-        fun flag(pid: String) = if (frame.available[pid] == true) "有" else "无"
+        fun n(x: Float?) = if (x == null) "NA" else x.toInt().toString()
+        binding.tvLive.text = buildString {
+            append("速度 ${n(frame.speedKmh)} km/h    踏板 ${n(frame.pedalPct)} %\n")
+            append("油门 ${n(frame.throttlePct)} %    转速 ${n(frame.rpm)}\n")
+            append("推算 ${state.virtualRpm.toInt()} rpm    ${state.gear} 挡")
+        }
+        fun flag(pid: String) = if (frame.available[pid] == true) "✓" else "✗"
         val loadSrc = when (state.loadSource) {
             "pedal" -> "踏板"
             "throttle" -> "油门"
             else -> "速度估算"
         }
-        val rpmSrc = if (state.rpmSource == "real") "真实转速" else "虚拟转速"
-        binding.tvDataStatus.text = buildString {
-            append("数据 速度:${flag("0D")} 油门:${flag("11")} 踏板:${flag("5A")} 转速:${flag("0C")}")
-            append(" | 负载源:$loadSrc 转速源:$rpmSrc")
-            append(" | ${state.gear}挡 ${state.virtualRpm.toInt()}rpm")
-        }
+        binding.tvDataStatus.text =
+            "可用 速度${flag("0D")} 踏板${flag("5A")} 油门${flag("11")} 转速${flag("0C")}" +
+                "  |  负载源 $loadSrc · 转速源 ${if (state.rpmSource == "real") "真实" else "虚拟"}"
     }
 
     private fun hasPerms(): Boolean {

@@ -70,12 +70,16 @@ class VirtualGearbox(
             rpm = idleRpm + (speed * 38f * load) / ratioFor(gear)
         }
 
+        // load 原始范围 0.2..2.0 → 归一化 0..1，供音频引擎塑造音色
+        val loadNorm = ((load - 0.2f) / 1.8f).coerceIn(0f, 1f)
+
         return EngineState(
             speedKmh = speed,
             throttlePct = frame.throttlePct ?: 0f,
             virtualRpm = rpm,
             gear = gear,
             shifting = shiftEvent,
+            load = loadNorm,
             loadSource = loadSource,
             rpmSource = rpmSource
         )

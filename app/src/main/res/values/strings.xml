@@ -16,5 +16,8 @@
     <string name="data_status_waiting">数据可用：等待连接…</string>
     <string name="label_pedal">优先用加速踏板作负载(关则回退油门/速度)</string>
     <string name="label_realrpm">用真实电机转速(若本车暴露，否则自动虚拟)</string>
+    <string name="live_waiting">实时数据：等待连接…</string>
+    <string name="label_show_debug">显示原始串口日志(调试)</string>
+    <string name="btn_clear_log">清空日志</string>
     <string name="perm_required">需要蓝牙权限才能扫描 OBD 设备</string>
 </resources>

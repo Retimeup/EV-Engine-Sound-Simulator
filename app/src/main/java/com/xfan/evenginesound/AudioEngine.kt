@@ -14,6 +14,7 @@ object AudioEngine {
     external fun nativeSetRpm(rpm: Float)
     external fun nativeSetSpeed(speed: Float)
     external fun nativeSetGear(gear: Int)
+    external fun nativeSetLoad(load: Float)
     external fun nativeSetBlend(blend: Float)
     external fun nativeSetVolume(volume: Float)
     external fun nativeTriggerShift()
@@ -27,6 +28,7 @@ object AudioEngine {
         nativeSetRpm(state.virtualRpm)
         nativeSetSpeed(state.speedKmh)
         nativeSetGear(state.gear)
+        nativeSetLoad(state.load)
         if (state.shifting) nativeTriggerShift()
     }
 
